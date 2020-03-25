@@ -6,6 +6,11 @@
 *txt
 *xml
 *.so
+.settings/
+.vscode/
+.gitignore
+.cproject
+.project
 i18n/
 libs/
 obj/
