@@ -1,0 +1,59 @@
+# Base Define
+TARGET = libzkgui.so
+COMPILE_ROOT := $(shell pwd)
+CC = ${ZK_TOOLCHAIN_CC}
+STRIP = ${ZK_TOOLCHAIN_STRIP}
+CFLAGS = -I$(ZK_PREFIX)/include -I$(ZK_PREFIX)/include/easyui -I./jni/include
+CONFIG_PREFIX =$(ZK_PREFIX)
+
+define all-cpp-files-under
+$(patsubst ./%,%, \
+  $(shell cd $(COMPILE_ROOT) ; \
+          find $(1) -name "*.cpp" -and -not -name ".*") \
+ )
+endef
+
+LOCAL_SRC_FILES  :=  \
+	$(call all-cpp-files-under, jni/activity) \
+	$(call all-cpp-files-under, jni/uart) \
+	$(call all-cpp-files-under, jni/test) \
+	jni/Main.cpp \
+	jni/broadcastserver.cpp \
+	jni/SocketClient.cpp
+
+## cJson
+#LOCAL_SRC_FILES += \
+#            src/cJSON.c
+# Module Include Path
+LOCAL_C_INCLUDES := -I$(COMPILE_ROOT)/jni/activity
+LOCAL_C_INCLUDES += -I$(COMPILE_ROOT)/jni/uart
+LOCAL_C_INCLUDES += -I$(COMPILE_ROOT)/jni
+VSS_INCLUDE_PATH := $(LOCAL_C_INCLUDES)
+
+LOCAL_LDFLAGS := -Wl,-gc-sections -Wl,--hash-style=gnu
+OBJS = $(patsubst %.cpp,%.cpp.o,$(LOCAL_SRC_FILES))
+SRC_DEPS = $(patsubst %.cpp,%.d,$(LOCAL_SRC_FILES))
+COMPILEDEP = $(CC) -MM "$<"  $(LOCAL_CFLAGS) $(CFLAGS) $(VSS_INCLUDE_PATH)
+.PHONY: all $(TARGET) clean install
+
+all: $(TARGET) install
+
+$(TARGET): $(SRC_DEPS) $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LOCAL_CFLAGS) $(LOCAL_LDFLAGS) -o $@ $(OBJS) -fPIC -shared $(VSS_INCLUDE_PATH)
+	$(STRIP) $@ --strip-unneeded
+
+$(SRC_DEPS): %.d : %.cpp
+	@echo "SRC_DEPS: " $(notdir $@)
+	@set -e;$(COMPILEDEP) > $@.$$$$; \
+	sed 's,.*\.o[ :]*,$(@:%.d=%.o) $@ : ,g' < $@.$$$$ > $@;rm -f $@.$$$$
+
+$(OBJS): %.cpp.o : %.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LOCAL_CFLAGS) $(LOCAL_LDFLAGS) -c $^ -o $@ -fPIC -shared $(VSS_INCLUDE_PATH)
+
+install: 
+	-mkdir -p $(CONFIG_PREFIX)/lib
+	-cp $(TARGET) $(CONFIG_PREFIX)/lib/
+
+clean:
+	-rm $(TARGET) $(OBJS) $(SRC_DEPS)
+

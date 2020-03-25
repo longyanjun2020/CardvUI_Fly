@@ -1,0 +1,14 @@
+prefix=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg
+exec_prefix=${prefix}
+libdir=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg/lib
+includedir=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 58.35.100
+Requires: 
+Requires.private: libavutil >= 56.22.100
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -pthread -lm -lfdk-aac
+Cflags: -I${includedir}

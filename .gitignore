@@ -1,0 +1,13 @@
+*.jpg
+*.png
+*.o
+*.a
+*.bmp
+*txt
+*xml
+*.so
+i18n/
+libs/
+obj/
+resources/
+ui/

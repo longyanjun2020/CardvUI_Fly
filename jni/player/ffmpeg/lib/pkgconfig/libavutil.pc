@@ -1,0 +1,14 @@
+prefix=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg
+exec_prefix=${prefix}
+libdir=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg/lib
+includedir=/home/media/jeff.li/I6e/code/cardv/alkaid/sdk/verify/CardvUI/ffmpeg/ffmpeg-4.1.3/../../CardvUI_Fly/jni/player/ffmpeg/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 56.22.100
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: -pthread -lm
+Cflags: -I${includedir}
